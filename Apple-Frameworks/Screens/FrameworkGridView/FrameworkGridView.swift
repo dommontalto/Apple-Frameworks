@@ -9,38 +9,6 @@ import SwiftUI
 
 struct FrameworkGridView: View {
     
-    // @StateObject - Listens still but object version
-    @StateObject var viewModel = FrameworkGridViewModel()
-    
-    var body: some View {
-        
-        NavigationView {
-            List {
-                ForEach(MockData.frameworks) { framework in
-                    NavigationLink(destination: FrameworkDetailView(framework: framework, isShowingDetailView: $viewModel.isShowingDetailView)) {
-                        
-                        FrameworkTitleView(framework: framework)
-                    }
-                }
-            }
-            
-            .navigationTitle("Frameworks")
-        }
-        
-        .accentColor(Color(.label)) // Remove for Grid View
-    }
-}
-
-#Preview {
-    FrameworkGridView()
-}
-
-// Grid view
-
-/*
-struct FrameworkGridView: View {
-    
-    // @StateObject - Listens still but object version
     @StateObject var viewModel = FrameworkGridViewModel()
     
     var body: some View {
@@ -52,17 +20,23 @@ struct FrameworkGridView: View {
                         FrameworkTitleView(framework: framework)
                             .onTapGesture {
                                 viewModel.selectedFramework = framework
+                                viewModel.isShowingDetailView = true
                             }
                     }
                 }
             }
             .navigationTitle("Frameworks")
-            .sheet(isPresented: $viewModel.isShowingDetailView, content: {
-                FrameworkDetailView(framework:
-                                        viewModel.selectedFramework!, isShowingDetailView: $viewModel.isShowingDetailView)
-            })
+            .sheet(isPresented: $viewModel.isShowingDetailView) {
+                if let selectedFramework = viewModel.selectedFramework {
+                    FrameworkDetailView(viewModel: FrameworkDetailViewModel(framework: selectedFramework, isShowingDetailView: $viewModel.isShowingDetailView))
+                }
+            }
         }
     }
 }
 
-*/
+
+#Preview {
+    FrameworkGridView()
+}
+

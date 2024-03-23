@@ -9,29 +9,25 @@ import SwiftUI
 
 struct FrameworkDetailView: View {
     
-    var framework: Framework
-    
-    // @Binding - Listens from child
-    @Binding var isShowingDetailView: Bool
-    @State private var isShowingSafariView = false
+    @ObservedObject var viewModel: FrameworkDetailViewModel
     
     var body: some View {
         VStack {
             
-           //  XDismissButton(isShowingDetailView: $isShowingDetailView) - Grid View
+            XDismissButton(isShowingDetailView: $viewModel.isShowingDetailView.wrappedValue) 
             
             Spacer()
             
-            FrameworkTitleView(framework: framework)
+            FrameworkTitleView(framework: viewModel.framework)
             
-            Text(framework.description)
+            Text(viewModel.framework.description)
                 .font(.body)
                 .padding()
             
             Spacer()
             
             Button {
-                isShowingSafariView = true
+                viewModel.isShowingSafariView = true
             } label: {
               // AFButton(title: "Learn More")
                 Label("Learn More", systemImage: "book.fill")
@@ -40,12 +36,12 @@ struct FrameworkDetailView: View {
             .controlSize(.large)
             .tint(.red)
         }
-        .fullScreenCover(isPresented: $isShowingSafariView, content: {
-            SafariView(url: URL(string: framework.urlString)!)
+        .fullScreenCover(isPresented: $viewModel.isShowingSafariView, content: {
+            SafariView(url: URL(string: viewModel.framework.urlString)!)
         })
     }
 }
 
 #Preview {
-    FrameworkDetailView(framework: MockData.sampleFramework, isShowingDetailView: .constant(false))
+    FrameworkDetailView(viewModel: FrameworkDetailViewModel(framework: MockData.sampleFramework, isShowingDetailView: .constant(false)))
 }
